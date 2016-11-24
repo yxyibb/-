@@ -1,0 +1,51 @@
+clear all
+close all
+clc
+rgb_image1=imread('E:\program\shiyan\101.jpg');
+figure,
+subplot(3,1,1),imshow(rgb_image1);
+%提取分量图像。
+fR1=double(rgb_image1(:,:,1));
+fG1=double(rgb_image1(:,:,2));
+fB1=double(rgb_image1(:,:,3));
+rgb_image2=imread('E:\program\shiyan\1.jpg');
+subplot(3,1,2),imshow(rgb_image2);
+fR2=double(rgb_image2(:,:,1));
+fG2=double(rgb_image2(:,:,2));
+fB2=double(rgb_image2(:,:,3));
+%取图像大小
+[r,c]=size(fR1);
+%计算两幅图像各自的R、G、B分量的均值和方差
+R1=mean(mean(fR1));%均值
+G1=mean(mean(fG1));
+B1=mean(mean(fB1));
+r1=mean(var(fR1));%方差
+g1=mean(var(fG1));
+b1=mean(var(fB1));
+R2=mean(mean(fR2));
+G2=mean(mean(fG2));
+B2=mean(mean(fB2));
+r2=mean(var(fR2));
+g2=mean(var(fG2));
+b2=mean(var(fB2));
+%转换图像
+gray1=rgb2gray(rgb_image1);
+gray2=rgb2gray(rgb_image2);
+%计算图像的亮度均值
+M1=mean(mean(gray1));
+M2=mean(mean(gray2));
+fR3=zeros(r,c);
+fG3=zeros(r,c);
+fB3=zeros(r,c);
+%进行补偿
+if M1-M2>5
+    for i=1:r
+        for j=1:c
+            fR3(i,j)=round(fR2(i,j)+(R1-R2)*(r1/r2));
+            fG3(i,j)=round(fG2(i,j)+(G1-G2)*(g1/g2));
+            fB3(i,j)=round(fB2(i,j)+(B1-B2)*(b1/b2));
+        end
+    end
+end
+rgb_image3=cat(3,fR3,fG3,fB3);
+subplot(313),imshow(uint8(rgb_image3));
